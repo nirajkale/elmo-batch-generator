@@ -1,6 +1,9 @@
 # elmo-batch-generator
 elmo-batch-generator
 
+## [EDIT]
+- Added an example usage of this generatror in the form of sentiment analysis
+
 ## A keras generator that can generate elmo embeddings batch by batch
 ### features
 - Support both output modes & signature in elmo model
