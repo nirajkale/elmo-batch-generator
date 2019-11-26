@@ -14,24 +14,25 @@ if __name__ == "__main__":
     data= list(df['data'])
     labels = list(df['labels'])
 
+    tokens = []
+    targets = []
     for i, text in tqdm(enumerate(data), desc='tokenizing tests', total= len(data)):
         try:
-            data[i] = text_to_word_sequence(text)
-            if labels[i]=='pos':
-                labels[i] = 1
-            else:
-                labels[i] = 0
+            if not (text is np.nan):
+                tokens.append(text_to_word_sequence(text))
+                if labels[i]=='pos':
+                    targets.append(1)
+                else:
+                    targets.append(0)
         except Exception as e:
-            print(i)
-            del data[i]
-            del labels[i]
+            print(e)
     
-    labels = np.array(labels)
+    targets = np.array(targets)
     assert(len(data)==len(labels))
 
     train_gen = ElmoBatchGenerator(
-        data = data,
-        labels = labels,
+        data = tokens,
+        labels = targets,
         sequence_length= 100,
         output_mode= 'elmo',
         signature= 'tokens',
