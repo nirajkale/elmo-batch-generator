@@ -31,8 +31,19 @@ if __name__ == "__main__":
     assert(len(data)==len(labels))
 
     train_gen = ElmoBatchGenerator(
-        data = tokens,
-        labels = targets,
+        data = tokens[:20000],
+        labels = targets[:20000],
+        sequence_length= 100,
+        output_mode= 'elmo',
+        signature= 'tokens',
+        batch_size= 32,
+        return_incomplete_batch= True,
+        use_embedding_caching= True
+    )
+
+    val_gen = ElmoBatchGenerator(
+        data = tokens[20000:],
+        labels = targets[20000:],
         sequence_length= 100,
         output_mode= 'elmo',
         signature= 'tokens',
@@ -50,17 +61,14 @@ if __name__ == "__main__":
     model.compile( optimizer='adam', metrics= ['acc'], loss= 'binary_crossentropy')
     print(model.summary())
 
+    train_gen.warmup(3)
+
     model.fit_generator(
         generator = train_gen,
         epochs = 8,
-        verbose = 1
+        verbose = 1,
+        validation_data: val_gen
     )
-
-    print('runnig test')
-    texts = [
-        'i like eating apples',
-        'i killed the bastard'
-    ]
 
     tokens = [text_to_word_sequence(text) for text in texts]
 

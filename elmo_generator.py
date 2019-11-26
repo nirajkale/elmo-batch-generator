@@ -169,9 +169,10 @@ if __name__ == "__main__":
     # print(a[:2])
 
     # print( len(gen))
-    for i in range(10):
-        x, y_true = gen[i]
-        print(x.shape, ' | ', len(y_true))
+    for epoch in range(8):
+        for index in range(len(gen)):
+            x, y_true = gen[index]
+            #train
 
 
     
