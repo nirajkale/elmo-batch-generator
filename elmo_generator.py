@@ -103,7 +103,7 @@ class ElmoBatchGenerator(Sequence):
                 counts = np.count_nonzero(counts, axis= -1)
             counts = np.where(counts>1, 1, 0).sum()
             if counts == cached_emb.shape[0]:
-                print('using cache')
+                print('using generator cache')
                 return ( cached_emb, labels_batch)
         if self.signature =='default':
             embeddings = self.get_embeddings_for_texts( batch_data)
@@ -122,8 +122,16 @@ class ElmoBatchGenerator(Sequence):
     def __getitem__(self, idx):
         return self.get_batch(idx)
 
-    
+    def warmup(self, num_batches=3):
+        for i in tqdm(len(num_batches)):
+            batch, labels= self[i]
+            del batch
+            del labels
 
+    def bulk_export(self, output_file):
+        assert(output_file[ output_file.rindex('.')+1:]=='npy')
+        warmup(self.__len__())
+        np.save(output_file, self.cache)
 
 if __name__ == "__main__":
     
