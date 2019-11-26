@@ -78,9 +78,14 @@ class ElmoBatchGenerator(Sequence):
 
     def get_embeddings_for_tokens(self, tokens):
         for i, _tokens in enumerate(tokens):
-            _tokens = _tokens[: self.sequence_length]
-            _tokens.extend( [""]*( self.sequence_length - len(_tokens) ) )
-            tokens[i] = _tokens
+            try:
+                _tokens = _tokens[: self.sequence_length]
+                _tokens.extend( [""]*( self.sequence_length - len(_tokens) ) )
+                tokens[i] = _tokens
+            except Exception as e:
+                print(e)
+                print('TOkens:', _tokens)
+                print('Original:', tokens[i])
         emb = self.sess.run(fetches = self.embeddings, feed_dict= { self.x_tensor: tokens })
         return emb
         
